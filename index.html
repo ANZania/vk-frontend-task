@@ -13,9 +13,21 @@
     <script src="./src/scripts/index.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <div class="emoji-picker-container"></div>
-        <div class="textarea-container"></div>
+    <div class="main-container">
+        <div class="content-container">
+            <div class="emoji-picker-wrapper">
+                <div class="emoji-picker-container"></div>
+                <div class="emoji-picker-pointer"></div>
+            </div>
+            <div class="input-wrapper">
+                <div class="input-container">
+                        <div contenteditable="true" data-placeholder="Ваше сообщение" class="input" spellcheck="true" ></div>
+                    <div class="button-container">
+                        <div class="emoji-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>
