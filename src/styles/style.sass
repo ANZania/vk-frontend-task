@@ -48,32 +48,39 @@ body
   display: flex
   flex-direction: column
   justify-content: flex-end
-  align-items: center
+  align-items: flex-end
 
 .emoji-picker-wrapper
   visibility: hidden
   opacity: 0
   display: flex
-  flex-direction: row
+  flex-direction: column
   justify-content: flex-end
+  align-items: flex-end
   width: 100%
   height: 30%
-  margin-bottom: 5px
-  transition: 0.3s ease-in all
+  transition: 0.1s ease-in all
   &.active
     visibility: visible
     opacity: 100%
-    transition: 0.3s ease-in all
+    transition: 0.1s ease-in all
 
 .emoji-picker-container
   width: 100%
   max-width: 300px
   height: 100%
-  border: 1.5px solid #C5D0DB
-  margin-bottom: 5px
+  border: 1px solid #C5D0DB
   border-radius: 4px
   padding: 8px 36px 9px 10px
   position: relative
+
+.emoji-picker-pointer
+  background-image: url("../assets/icons/emoji-picker-pointer.svg")
+  width: 16px
+  height: 10px
+  position: relative
+  top: -1px
+  right: 11px
 
 .input-wrapper
   background-color: #fff
@@ -84,7 +91,7 @@ body
 .input-container
   width: 100%
   height: 100%
-  border: 1.5px solid #C5D0DB
+  border: 1px solid #C5D0DB
   border-radius: 4px
   padding: 8px 36px 9px 10px
   position: relative
