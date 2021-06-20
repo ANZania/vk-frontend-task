@@ -3,5 +3,5 @@ import renderEmoji from "./renderEmoji";
 import data from '../emojiData.json';
 
 
-manageListeners()
+manageListeners(data)
 renderEmoji(data)

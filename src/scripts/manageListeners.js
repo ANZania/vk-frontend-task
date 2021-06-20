@@ -1,4 +1,4 @@
-function manageListeners() {
+function manageListeners(data) {
     const images = require('../assets/icons/emoji/*/*.png');
     const buttonsToolbar = document.querySelectorAll('.emoji-toolbar__button');
     const emojiBlockWrapper = document.querySelector('.emoji-block_wrapper');
@@ -86,10 +86,8 @@ function manageListeners() {
             img.setAttribute('class','emoji');
 
             const selection = window.getSelection();
-            if (selection.rangeCount === 0 /* нет выделения */ ||
-                // выделение лежит не в #conteneditable
+            if (selection.rangeCount === 0 ||
                 !textInput.contains(selection.getRangeAt(0).commonAncestorContainer)) {
-                // вставляем в конец элемента #editable
                 textInput.appendChild(img);
                 const range = document.createRange();
                 range.selectNodeContents(textInput);
@@ -99,12 +97,8 @@ function manageListeners() {
                 sel.addRange(range)
             } else {
                 let range = selection.getRangeAt(0);
-                // сжимаем range в его правый конец
                 range.collapse(false);
-                // вставляем картинку
                 range.insertNode(img);
-
-                // делаем, чтобы курсор был после вставленной картинки
                 selection.removeAllRanges();
                 range.setStartAfter(img);
                 selection.addRange(range);
@@ -117,8 +111,22 @@ function manageListeners() {
     const resetFormatting = (event) => {
         if (event.target.closest('.input')) {
             event.preventDefault();
-            const text = event.clipboardData.getData("text/plain");
-            document.execCommand("insertHTML", false, text);
+            const emojiReg = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g
+            let text = event.clipboardData.getData("text/plain");
+
+            const replaceEmoji = (match) => {
+                let img = '';
+                data.forEach((element, index) => {
+                    element.items.forEach((item) => {
+                        if (match == item) {
+                            img = `<img src="${images[index][item]}" alt="${item}" class="emoji" loading="lazy">`;
+                        }
+                    })
+                })
+                return img
+            }
+            text = text.replace(emojiReg, replaceEmoji);
+            document.execCommand('insertHTML', false, text);
         }
     }
 
