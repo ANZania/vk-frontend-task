@@ -3,6 +3,7 @@ function manageListeners(data) {
     const buttonsToolbar = document.querySelectorAll('.emoji-toolbar__button');
     const emojiBlockWrapper = document.querySelector('.emoji-block_wrapper');
     const emojiRecentWrapper = document.querySelector('.emoji-recent_wrapper');
+    let recent = [];
     const toggleEmojiStates = () => {
         buttonsToolbar.forEach((elem, index) => {
             if (!elem.classList.contains('active')) {
@@ -103,7 +104,7 @@ function manageListeners(data) {
                 range.setStartAfter(img);
                 selection.addRange(range);
             }
-
+            manageRecentEmoji(elementId, elementBlockIndex, imgSrc)
         } else if (event.target.closest('.emoji-toolbar__button')) {
                 toggleEmojiStates()
         }
@@ -118,7 +119,7 @@ function manageListeners(data) {
                 let img = '';
                 data.forEach((element, index) => {
                     element.items.forEach((item) => {
-                        if (match == item) {
+                        if (match === item) {
                             img = `<img src="${images[index][item]}" alt="${item}" class="emoji" loading="lazy">`;
                         }
                     })
@@ -129,6 +130,58 @@ function manageListeners(data) {
             document.execCommand('insertHTML', false, text);
         }
     }
+    const renderRecent = (data) => {
+        const recentBlock = emojiRecentWrapper.querySelector('.emoji-recent');
+        recentBlock.textContent = '';
+        let elemAccum = '';
+        data.forEach((element) => {
+            const emojiBlock =
+            `<div class="emoji__wrap">
+                <div class="emoji-addButton__container" id="${element.id}" blockIndex="${element.index}">
+                    <img src="${element.src}" alt="${element.id}" class="emoji-img" loading="lazy">
+                </div>
+            </div>`;
+                elemAccum += emojiBlock;
+        })
+        const emojiWrap =
+            `<section class="emoji-block__container">
+                    ${elemAccum}
+                </section>`;
+        recentBlock.insertAdjacentHTML('beforeend', emojiWrap);
+    }
+    const manageRecentEmoji = (id, index, src) => {
+        let ifRecentIncludes;
+        recent.forEach((element, index) => {
+            if (element.id === id) {
+                ifRecentIncludes = index;
+                console.log(ifRecentIncludes)
+            }
+        })
+        if (ifRecentIncludes === undefined) {
+            recent.unshift({
+                "id": id,
+                "index": index,
+                "src": src
+            });
+            recent = recent.splice(0, 25);
+            console.log('new', recent)
+            renderRecent(recent);
+        } else {
+            if (ifRecentIncludes!==0) {
+                const elementsBefore = recent.slice(0, ifRecentIncludes);
+                const elementsAfter = recent.slice(ifRecentIncludes+1);
+                recent = [{
+                    "id": id,
+                    "index": index,
+                    "src": src
+                }, ...elementsBefore, ...elementsAfter];
+                recent = recent.splice(0, 25);
+                console.log('old', recent)
+                renderRecent(recent);
+            }
+        }
+
+    }
 
     toggleListeners('add');
 
@@ -138,7 +191,7 @@ function manageListeners(data) {
     });
 
     document.addEventListener('click', (event) => initEmojiChoice(event))
-    document.addEventListener("paste", (event) => resetFormatting(event));
+    document.addEventListener('paste', (event) => resetFormatting(event));
 }
 
 export default manageListeners
