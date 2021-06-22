@@ -3,6 +3,7 @@ function manageListeners(data) {
     const buttonsToolbar = document.querySelectorAll('.emoji-toolbar__button');
     const emojiBlockWrapper = document.querySelector('.emoji-block_wrapper');
     const emojiRecentWrapper = document.querySelector('.emoji-recent_wrapper');
+    const textInput = document.querySelector('.input');
     let recent = [];
     const toggleEmojiStates = () => {
         buttonsToolbar.forEach((elem, index) => {
@@ -43,13 +44,13 @@ function manageListeners(data) {
                     emojiPicker.classList.add('active')
                 }
             }
-            if (event.target.closest('.emoji-picker-wrapper')) {
+            if (event.target.closest('.emoji-picker-container')) {
                 clearTimeout(expireTimerId)
             }
         }
 
         const toggleEmojiPickerMouseout = (event) => {
-            if (event.target.closest('.emoji-button') || event.target.closest('.emoji-picker-wrapper')) {
+            if (event.target.closest('.emoji-button') || event.target.closest('.emoji-picker-container')) {
                 if (emojiPicker.classList.contains('active')) {
                     expireTimerId = setTimeout(() => {
                         emojiPicker.classList.remove('active')
@@ -61,12 +62,35 @@ function manageListeners(data) {
             }
         }
 
+        const manageKeyboardEvent = (event) => {
+            if (event.code === 'Tab') {
+                event.preventDefault()
+                if (!emojiPicker.classList.contains('active')) {
+                    emojiPicker.classList.add('active')
+                } else {
+                    emojiPicker.classList.remove('active')
+                }
+                const selection = window.getSelection();
+                if (selection.rangeCount === 0 ||
+                    !textInput.contains(selection.getRangeAt(0).commonAncestorContainer)) {
+                    const range = document.createRange();
+                    range.selectNodeContents(textInput);
+                    range.collapse(false);
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range)
+                }
+
+            }
+        }
+
         if (actionType === 'add') {
             if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent) || (window.screen.width <= 1024)) {
                 document.addEventListener('click', toggleEmojiPickerClick, false)
             } else {
                 document.addEventListener('mouseover', toggleEmojiPickerMouseover, false)
                 document.addEventListener('mouseout', toggleEmojiPickerMouseout, false)
+                document.addEventListener('keydown', manageKeyboardEvent)
             }
         } else {
             document.removeEventListener('click', toggleEmojiPickerClick)
@@ -77,7 +101,6 @@ function manageListeners(data) {
     const initEmojiChoice = (event) => {
         if (event.target.closest('.emoji-addButton__container')) {
             event.preventDefault();
-            const textInput = document.querySelector('.input');
             const elementId = event.target.closest('.emoji-addButton__container').id;
             const elementBlockIndex = event.target.closest('.emoji-addButton__container').attributes.blockindex.value;
 
@@ -186,6 +209,7 @@ function manageListeners(data) {
     toggleListeners('add');
 
     window.addEventListener('resize', () => {
+        window.location.reload()
         toggleListeners('remove');
         toggleListeners('add');
     });
