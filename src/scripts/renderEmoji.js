@@ -1,5 +1,4 @@
-function renderEmoji( data) {
-    const images = require('../assets/icons/emoji/*/*.png')
+function renderEmoji(data, images) {
     const emojiBlock = document.querySelector('.emoji-block');
     data.forEach((element, blockIndex) => {
         const heading = `<p class="emoji-heading">${element.title}</p>`;
