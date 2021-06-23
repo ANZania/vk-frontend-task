@@ -48,6 +48,11 @@ body {
     width: 90%;
   }
 }
+@media (max-width: 300px) {
+  .main-container {
+    width: 96%;
+  }
+}
 
 .content-container {
   width: 100%;
@@ -62,6 +67,7 @@ body {
   display: none;
   width: 100%;
   height: 40%;
+  max-height: 360px;
 }
 .emoji-picker-wrapper.active {
   display: flex;
@@ -71,14 +77,20 @@ body {
 }
 
 .emoji-picker-container {
-  width: 290px;
+  width: 284px;
   height: 100%;
   min-height: 100px;
   border: 1px solid #C5D0DB;
   border-radius: 4px;
-  padding: 9px 0 36px 0;
+  padding: 9px 5px 36px 0;
   position: relative;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 300px) {
+  .emoji-picker-container {
+    width: 100%;
+    padding: 9px 0 36px 0;
+  }
 }
 
 .emoji-block_wrapper {
@@ -87,6 +99,26 @@ body {
   overflow: auto;
   padding-left: 4px;
   display: none;
+  scrollbar-base-color: black;
+  border-bottom: 5px solid transparent;
+  overflow-x: hidden;
+  scroll-width: 7px;
+}
+@media (max-width: 300px) {
+  .emoji-block_wrapper {
+    padding: 0;
+  }
+}
+.emoji-block_wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.emoji-block_wrapper::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 3px;
+}
+.emoji-block_wrapper::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #DAE2EA;
 }
 .emoji-block_wrapper.active {
   display: block;
@@ -105,6 +137,11 @@ body {
   width: 100%;
   height: 100%;
   padding: 0 4px;
+}
+@media (max-width: 300px) {
+  .emoji-recent {
+    padding: 0;
+  }
 }
 .emoji-recent:empty:before {
   color: #939393;
@@ -145,7 +182,7 @@ body {
 }
 
 .emoji-block {
-  width: 100%;
+  width: 260px;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -170,6 +207,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.emoji__wrap.chosen {
+  background-color: #DAE2EA;
+  border-radius: 3px;
 }
 
 .emoji-addButton__container {
@@ -242,6 +283,7 @@ body {
   outline: none;
   line-height: 18px;
   resize: none;
+  padding-right: 5px;
 }
 .input:focus:empty:before {
   color: transparent;
@@ -251,6 +293,17 @@ body {
   font-size: 13px;
   line-height: 18px;
   content: "Ваше сообщение";
+}
+.input::-webkit-scrollbar {
+  width: 6px;
+}
+.input::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 3px;
+}
+.input::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #DAE2EA;
 }
 
 .button-container {
@@ -277,6 +330,10 @@ body {
   margin: 0 1px;
   overflow: hidden;
   vertical-align: middle;
+}
+
+.defined {
+  color: #2A5885;
 }
 
 /*# sourceMappingURL=style.css.map */

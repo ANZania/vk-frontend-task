@@ -1,18 +1,15 @@
 function renderEmoji( data) {
     const images = require('../assets/icons/emoji/*/*.png')
     const emojiBlock = document.querySelector('.emoji-block');
-    data.forEach((element, index) => {
+    data.forEach((element, blockIndex) => {
         const heading = `<p class="emoji-heading">${element.title}</p>`;
         emojiBlock.insertAdjacentHTML('beforeend', heading);
         let elemAccum = '';
-        element.items.forEach((item) => {
-            if (!images[index][item]) {
-                console.log('item = ', item, ' index = ', index, 'images[index] = ', )
-            }
+        element.items.forEach((item, itemIndex) => {
             const emojiBlock =
                 `<div class="emoji__wrap">
-                    <div class="emoji-addButton__container" id="${item}" blockIndex="${index}">
-                        <img src="${images[index][item]}" alt="${item}" class="emoji-img" loading="lazy">
+                    <div class="emoji-addButton__container" id="${item}" blockIndex="${blockIndex}" itemIndex="${itemIndex}">
+                        <img src="${images[blockIndex][item]}" alt="${item}" class="emoji-img" loading="lazy">
                     </div>
                 </div>`;
             elemAccum += emojiBlock;

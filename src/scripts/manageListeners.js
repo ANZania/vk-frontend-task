@@ -3,8 +3,11 @@ function manageListeners(data) {
     const buttonsToolbar = document.querySelectorAll('.emoji-toolbar__button');
     const emojiBlockWrapper = document.querySelector('.emoji-block_wrapper');
     const emojiRecentWrapper = document.querySelector('.emoji-recent_wrapper');
+    const emojiPickerWrapper = document.querySelector('.emoji-picker-wrapper');
+    const emojiWrap = document.querySelectorAll('.emoji__wrap');
     const textInput = document.querySelector('.input');
     let recent = [];
+    let focusedEmoji = 0;
     const toggleEmojiStates = () => {
         buttonsToolbar.forEach((elem, index) => {
             if (!elem.classList.contains('active')) {
@@ -34,6 +37,10 @@ function manageListeners(data) {
                     }
                 } else if (event.target.closest('.button-container') && !emojiPicker.classList.contains('active')) {
                     emojiPicker.classList.add('active')
+                    const chosenEmoji = document.querySelector('.chosen');
+                    if (chosenEmoji) {
+                        chosenEmoji.classList.remove('chosen');
+                    }
                 }
             }
         }
@@ -42,6 +49,10 @@ function manageListeners(data) {
             if (event.target.closest('.emoji-button')) {
                 if (!emojiPicker.classList.contains('active')) {
                     emojiPicker.classList.add('active')
+                    const chosenEmoji = document.querySelector('.chosen');
+                    if (chosenEmoji) {
+                        chosenEmoji.classList.remove('chosen');
+                    }
                 }
             }
             if (event.target.closest('.emoji-picker-container')) {
@@ -65,6 +76,7 @@ function manageListeners(data) {
         const manageKeyboardEvent = (event) => {
             if (event.code === 'Tab') {
                 event.preventDefault()
+                emojiWrap[focusedEmoji].classList.add('chosen');
                 if (!emojiPicker.classList.contains('active')) {
                     emojiPicker.classList.add('active')
                 } else {
@@ -81,28 +93,90 @@ function manageListeners(data) {
                     sel.addRange(range)
                 }
 
+            } else if ((event.code === 'ArrowUp')||
+                (event.code === 'ArrowDown')||
+                (event.code === 'ArrowLeft')||
+                (event.code === 'ArrowRight')) {
+                if (emojiPicker.classList.contains('active')) {
+                    event.preventDefault()
+                    switch(event.code) {
+                        case 'ArrowUp':
+                            (focusedEmoji - 10) >= 0? focusedEmoji -= 10: focusedEmoji = 0;
+                            break
+                        case 'ArrowDown':
+                            (focusedEmoji + 10) <= 1355? focusedEmoji += 10: focusedEmoji = 1355;
+                            break
+                        case 'ArrowLeft':
+                            (focusedEmoji - 1) >= 0? focusedEmoji -= 1: focusedEmoji = 0;
+                            break
+                        case 'ArrowRight':
+                            (focusedEmoji + 1) <= 1355? focusedEmoji += 1: focusedEmoji = 1355;
+                            break
+                    }
+
+                    const chosenEmoji = document.querySelector('.chosen');
+                    if (chosenEmoji) {
+                        chosenEmoji.classList.remove('chosen');
+                    }
+                    emojiWrap[focusedEmoji].classList.add('chosen');
+                    emojiWrap[focusedEmoji].scrollIntoView(false)
+                }
+            } else if (event.code === 'Enter') {
+                if (emojiPickerWrapper.classList.contains('active')) {
+                    event.preventDefault()
+                    initEmojiChoice(event, emojiWrap[focusedEmoji])
+                }
+            } else {
+                emojiPicker.classList.remove('active')
             }
+
+            // const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g
+            // const mentionRegex = /\B@\w+/g
+            // const mailRegex = /^\S+@\S+\.\S+$/g
+            // const hashtagRegex = /(#+[a-zA-Z0-9(_)]+)/g
+            //
+            // textInput.innerHTML = textInput.textContent.replace(hashtagRegex, (match) => {
+            //     return `<span class="defined">${match}</span>`
+            // })
+            // textInput.innerHTML = textInput.textContent.replace(urlRegex, (match) => {
+            //     return `<span class="defined">${match}</span>`
+            // });
+            // textInput.innerHTML = textInput.textContent.replace(mentionRegex, (match) => {
+            //     return `<span class="defined">${match}</span>`
+            // })
+            // textInput.innerHTML = textInput.textContent.replace(mailRegex, (match) => {
+            //     return `<span class="defined">${match}</span>`
+            // })
         }
 
         if (actionType === 'add') {
             if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent) || (window.screen.width <= 1024)) {
                 document.addEventListener('click', toggleEmojiPickerClick, false)
             } else {
-                document.addEventListener('mouseover', toggleEmojiPickerMouseover, false)
-                document.addEventListener('mouseout', toggleEmojiPickerMouseout, false)
+                document.addEventListener('mouseover', toggleEmojiPickerMouseover)
+                document.addEventListener('mouseout', toggleEmojiPickerMouseout)
                 document.addEventListener('keydown', manageKeyboardEvent)
             }
         } else {
             document.removeEventListener('click', toggleEmojiPickerClick)
             document.removeEventListener('mouseover', toggleEmojiPickerMouseout)
             document.removeEventListener('mouseout', toggleEmojiPickerMouseover)
+            document.removeEventListener('keydown', manageKeyboardEvent)
         }
     }
-    const initEmojiChoice = (event) => {
-        if (event.target.closest('.emoji-addButton__container')) {
-            event.preventDefault();
-            const elementId = event.target.closest('.emoji-addButton__container').id;
-            const elementBlockIndex = event.target.closest('.emoji-addButton__container').attributes.blockindex.value;
+    const initEmojiChoice = (event, emoji = null) => {
+        if (event.target.closest('.emoji-addButton__container') || emoji) {
+            let elementId;
+            let elementBlockIndex;
+            if (emoji && emoji.querySelector('.emoji-addButton__container')) {
+                elementId = emoji.querySelector('.emoji-addButton__container').id;
+                elementBlockIndex = emoji.querySelector('.emoji-addButton__container').attributes.blockindex.value;
+            } else {
+                event.preventDefault();
+                elementId = event.target.closest('.emoji-addButton__container').id;
+                elementBlockIndex = event.target.closest('.emoji-addButton__container').attributes.blockindex.value;
+            }
+
 
             const imgSrc = images[elementBlockIndex][elementId];
             const img = document.createElement('img');
@@ -129,7 +203,7 @@ function manageListeners(data) {
             }
             manageRecentEmoji(elementId, elementBlockIndex, imgSrc)
         } else if (event.target.closest('.emoji-toolbar__button')) {
-                toggleEmojiStates()
+            toggleEmojiStates()
         }
     }
     const resetFormatting = (event) => {
@@ -151,6 +225,23 @@ function manageListeners(data) {
             }
             text = text.replace(emojiReg, replaceEmoji);
             document.execCommand('insertHTML', false, text);
+            // const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g
+            // const mentionRegex = /\B@\w+/g
+            // const mailRegex = /^\S+@\S+\.\S+$/g
+            // const hashtagRegex = /(#+[a-zA-Z0-9(_)]+)/g
+            //
+            // textInput.innerHTML = textInput.textContent.replace(hashtagRegex, (match) => {
+            //     return `<span class="defined">${match}</span>`
+            // })
+            // textInput.innerHTML = textInput.textContent.replace(urlRegex, (match) => {
+            //     return `<span class="defined">${match}</span>`
+            // });
+            // textInput.innerHTML = textInput.textContent.replace(mentionRegex, (match) => {
+            //     return `<span class="defined">${match}</span>`
+            // })
+            // textInput.innerHTML = textInput.textContent.replace(mailRegex, (match) => {
+            //     return `<span class="defined">${match}</span>`
+            // })
         }
     }
     const renderRecent = (data) => {
@@ -159,12 +250,12 @@ function manageListeners(data) {
         let elemAccum = '';
         data.forEach((element) => {
             const emojiBlock =
-            `<div class="emoji__wrap">
+                `<div class="emoji__wrap">
                 <div class="emoji-addButton__container" id="${element.id}" blockIndex="${element.index}">
                     <img src="${element.src}" alt="${element.id}" class="emoji-img" loading="lazy">
                 </div>
             </div>`;
-                elemAccum += emojiBlock;
+            elemAccum += emojiBlock;
         })
         const emojiWrap =
             `<section class="emoji-block__container">
@@ -177,7 +268,6 @@ function manageListeners(data) {
         recent.forEach((element, index) => {
             if (element.id === id) {
                 ifRecentIncludes = index;
-                console.log(ifRecentIncludes)
             }
         })
         if (ifRecentIncludes === undefined) {
@@ -187,7 +277,6 @@ function manageListeners(data) {
                 "src": src
             });
             recent = recent.splice(0, 25);
-            console.log('new', recent)
             renderRecent(recent);
         } else {
             if (ifRecentIncludes!==0) {
@@ -199,7 +288,6 @@ function manageListeners(data) {
                     "src": src
                 }, ...elementsBefore, ...elementsAfter];
                 recent = recent.splice(0, 25);
-                console.log('old', recent)
                 renderRecent(recent);
             }
         }
@@ -216,6 +304,9 @@ function manageListeners(data) {
 
     document.addEventListener('click', (event) => initEmojiChoice(event))
     document.addEventListener('paste', (event) => resetFormatting(event));
+    document.addEventListener("DOMContentLoaded", () => {
+
+    });
 }
 
 export default manageListeners
