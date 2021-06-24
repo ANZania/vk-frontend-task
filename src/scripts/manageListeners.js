@@ -284,11 +284,13 @@ function manageListeners(data, images) {
     const initListeners = () => {
         addBasicListeners()
 
-        window.addEventListener('resize', () => {
-            window.location.reload()
-            removeBasicListeners();
-            addBasicListeners();
-        });
+        if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent))) {
+            window.addEventListener('resize', () => {
+                window.location.reload()
+                removeBasicListeners();
+                addBasicListeners();
+            });
+        }
 
         document.addEventListener('click', (event) => chooseEmoji(event))
         document.addEventListener('paste', (event) => resetFormatting(event));
