@@ -17,7 +17,6 @@ function renderRecent(recentData) {
         `<section class="emoji-block__container">
                     ${elemAccum}
         </section>`;
-
     recentBlock.insertAdjacentHTML('beforeend', emojiWrap);
 }
 

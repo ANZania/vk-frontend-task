@@ -41,16 +41,19 @@ body {
 @media (max-width: 1024px) {
   .main-container {
     width: 50%;
+    min-width: 284px;
   }
 }
 @media (max-width: 480px) {
   .main-container {
     width: 90%;
+    min-width: 284px;
   }
 }
 @media (max-width: 300px) {
   .main-container {
     width: 96%;
+    min-width: 260px;
   }
 }
 
@@ -84,7 +87,6 @@ body {
   border-radius: 4px;
   padding: 9px 5px 36px 0;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 @media (max-width: 300px) {
   .emoji-picker-container {
@@ -102,7 +104,8 @@ body {
   scrollbar-base-color: black;
   border-bottom: 5px solid transparent;
   overflow-x: hidden;
-  scroll-width: 7px;
+  scrollbar-color: #DAE2EA transparent;
+  scrollbar-width: thin;
 }
 @media (max-width: 300px) {
   .emoji-block_wrapper {

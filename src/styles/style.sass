@@ -1,15 +1,5 @@
 @import "font"
 
-=placeholder
-  &::-webkit-input-placeholder
-    @content
-  &:-moz-placeholder
-    @content
-  &::-moz-placeholder
-    @content
-  &:-ms-input-placeholder
-    @content
-
 *
   margin: 0
   padding: 0
@@ -39,10 +29,13 @@ body
   height: 100%
   @media (max-width: 1024px)
     width: 50%
+    min-width: 284px
   @media (max-width: 480px)
     width: 90%
+    min-width: 284px
   @media (max-width: 300px)
     width: 96%
+    min-width: 260px
 
 .content-container
   width: 100%
@@ -71,7 +64,6 @@ body
   border-radius: 4px
   padding: 9px 5px 36px 0
   position: relative
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)
   @media (max-width: 300px)
     width: 100%
     padding: 9px 0 36px 0
@@ -85,7 +77,8 @@ body
   scrollbar-base-color: black
   border-bottom: 5px solid transparent
   overflow-x: hidden
-  scroll-width: 7px
+  scrollbar-color: #DAE2EA transparent
+  scrollbar-width: thin
   @media (max-width: 300px)
     padding: 0
   &::-webkit-scrollbar

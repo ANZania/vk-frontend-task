@@ -203,6 +203,7 @@ function manageListeners(data, images) {
             }
             text = text.replace(emojiReg, replaceEmoji);
             document.execCommand('insertHTML', false, text);
+            // textInput.innerHTML = highlightMsg(textInput.innerHTML);
             setSavedState()
         }
     }
@@ -295,6 +296,7 @@ function manageListeners(data, images) {
     }
 
     initListeners();
+
 }
 
 export default manageListeners
